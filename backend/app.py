@@ -1,5 +1,12 @@
 from flask import Flask, request, jsonify
 from scrape import scrape_data
+import scrapy.crawler as crawler
+
+import sys         
+ 
+sys.path.append('E:/lqkhanh/scrapy/tutorial')
+
+from tutorial.spiders.google_spider import GoogleSpider
 
 app = Flask(__name__)
 
@@ -8,6 +15,9 @@ def receive_data():
     url = request.get_json()["url"]
     
     try:
+        process = crawler.CrawlerProcess()
+        process.spider_loader.load(GoogleSpider)
+        print(process)
         scraped_data = scrape_data(url)
         return scraped_data
     except Exception as e:
