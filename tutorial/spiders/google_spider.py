@@ -30,12 +30,15 @@ class GoogleSpider(scrapy.Spider):
         self.logger.info("Parse function called on: %s", response.url)
         title = response.css('h3>div::text').getall()
         links = response.css('a::attr(href)').getall()
+        stats = response.css('#top_nav').getall()
 
-        page = response.url.split("/")[-2]
-        filename = f"quotes-{page}.html"
+        links = [link for link in links if link.startswith('/url?q=http')]
+
+        filename = f"quotes-1.html"
         Path(filename).write_bytes(response.body)
         self.log(f"Saved file {filename}")
         yield {
             'title': title,
+            'stats': stats,
             'links': links,
         }
